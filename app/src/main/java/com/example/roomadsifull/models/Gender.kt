@@ -13,8 +13,9 @@ data class Gender(
     var id : Long,
     @ColumnInfo(name = COL_NAME)
     var name : String) {
+
     override fun toString(): String {
-        return name
+        return "$name"
     }
 
     companion object {
