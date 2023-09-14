@@ -1,5 +1,6 @@
 package com.example.roomadsifull
 
+import android.database.sqlite.SQLiteConstraintException
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -17,12 +18,28 @@ class MainActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
 
-          var count = AppDatabase.GetDataBase(this@MainActivity)
-              .genderDAO()
-              .insert(Gender(0, "Otros"))
-            runOnUiThread {
-                Toast.makeText(this@MainActivity, "$count", Toast.LENGTH_SHORT).show()
+            try {
+//                var count = AppDatabase.GetDataBase(this@MainActivity)
+//                    .genderDAO()
+//                    .insert(Gender(3, "Otros 2"))
+              var gender =   AppDatabase.GetDataBase(this@MainActivity).genderDAO().getAll().get(0)
+                // AppDatabase.GetDataBase().genderDAO().delete(gender)
+
+                var count = AppDatabase.GetDataBase().genderDAO().getAll().size
+                runOnUiThread {
+                    Toast.makeText(this@MainActivity, "$count", Toast.LENGTH_SHORT).show()
+                }
+            }catch (e: SQLiteConstraintException){
+                runOnUiThread {
+                    Toast.makeText(this@MainActivity, "ya existe un registro con el mismo nombre", Toast.LENGTH_SHORT).show()
+                }
+            }catch (e:Exception){
+                runOnUiThread {
+                    Toast.makeText(this@MainActivity, "${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
+
+
         }
 
     }

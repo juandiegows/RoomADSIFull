@@ -1,5 +1,6 @@
 package com.example.roomadsifull.database
 
+import android.app.Application
 import android.content.ContentValues
 import android.content.Context
 import androidx.room.Database
@@ -19,30 +20,38 @@ abstract class AppDatabase : RoomDatabase() {
 
         @Volatile
         private var INSTANCIA: AppDatabase? = null
-        fun GetDataBase(context: Context): AppDatabase {
+        fun GetDataBase(context: Context? =  null): AppDatabase {
             if (INSTANCIA != null) {
                 return INSTANCIA!!
             }
 
-            INSTANCIA = Room.databaseBuilder(
-                context.applicationContext,
-                AppDatabase::class.java,
-                DATABASE_NAME
-            ).addCallback(object : RoomDatabase.Callback() {
-                override fun onCreate(db: SupportSQLiteDatabase) {
-                    super.onCreate(db)
-                    var list = listOf(
-                        Gender(0, "Femenino"),
-                        Gender(0, "Masculino")
-                    )
-                    list.forEach {
-                        gender ->
-                        db.insert(Gender.TABLE_NAME, OnConflictStrategy.ABORT, ContentValues().apply {
-                            put(Gender.COL_NAME, gender.name)
-                        })
+            if (INSTANCIA == null && context == null){
+                throw Exception("Debe pasarle un contexto")
+            }
+
+
+            if(context != null){
+                INSTANCIA = Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    DATABASE_NAME
+                ).addCallback(object : RoomDatabase.Callback() {
+                    override fun onCreate(db: SupportSQLiteDatabase) {
+                        super.onCreate(db)
+                        var list = listOf(
+                            Gender(0, "Femenino"),
+                            Gender(0, "Masculino")
+                        )
+                        list.forEach {
+                                gender ->
+                            db.insert(Gender.TABLE_NAME, OnConflictStrategy.ABORT, ContentValues().apply {
+                                put(Gender.COL_NAME, gender.name)
+                            })
+                        }
                     }
-                }
-            }).build()
+                }).build()
+            }
+
             return INSTANCIA!!
 
         }
