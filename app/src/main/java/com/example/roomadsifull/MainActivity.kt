@@ -1,32 +1,76 @@
 package com.example.roomadsifull
 
 import android.database.sqlite.SQLiteConstraintException
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.roomadsifull.database.AppDatabase
+import com.example.roomadsifull.databinding.ActivityMainBinding
 import com.example.roomadsifull.models.Gender
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-      //  setNumer(1,2,3,4,5,6,7,8)
-
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        //  setNumer(1,2,3,4,5,6,7,8)
+        binding.btnShow.setOnClickListener {
+            var gender = binding.spinner.selectedItem as Gender
+            Toast.makeText(this@MainActivity, "${gender.name}", Toast.LENGTH_SHORT).show()
+        }
         CoroutineScope(Dispatchers.IO).launch {
 
             try {
 //                var count = AppDatabase.GetDataBase(this@MainActivity)
 //                    .genderDAO()
 //                    .insert(Gender(3, "Otros 2"))
-              var gender =   AppDatabase.GetDataBase(this@MainActivity).genderDAO().getAll().get(0)
+                var list = AppDatabase.GetDataBase(this@MainActivity).genderDAO().getAll()
                 // AppDatabase.GetDataBase().genderDAO().delete(gender)
 
                 var count = AppDatabase.GetDataBase().genderDAO().getAll().size
                 runOnUiThread {
+                    var adapter = object : ArrayAdapter<Gender>(
+                        this@MainActivity,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        list
+                    ){
+                        override fun getItemId(position: Int): Long {
+
+                            return  getItem(position)?.id ?: 0
+
+                        }
+
+
+                    }
+
+
+                    binding.spinner.adapter = adapter
+
+                    binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+                        override fun onItemSelected(
+                            p0: AdapterView<*>?,
+                            p1: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            Toast.makeText(this@MainActivity, "$position $id ", Toast.LENGTH_SHORT).show()
+                        }
+
+                        override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                        }
+                    }
+
+
                     Toast.makeText(this@MainActivity, "$count", Toast.LENGTH_SHORT).show()
                 }
             }catch (e: SQLiteConstraintException){
