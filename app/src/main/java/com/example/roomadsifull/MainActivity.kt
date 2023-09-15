@@ -38,6 +38,8 @@ class MainActivity : AppCompatActivity() {
 
 
                 var count = AppDatabase.GetDataBase().genderDAO().getAll().size
+
+
                 runOnUiThread {
                     binding.recycle.layoutManager  = LinearLayoutManager(this@MainActivity)
                     binding.recycle.adapter = GenderAdapter(list.toMutableList())
