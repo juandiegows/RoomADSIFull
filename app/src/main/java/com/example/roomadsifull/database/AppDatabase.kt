@@ -15,6 +15,7 @@ import com.example.roomadsifull.models.Gender
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun  genderDAO():GenderDAO
+
     companion object {
         const val DATABASE_NAME = "db_test"
 

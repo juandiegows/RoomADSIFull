@@ -7,6 +7,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.roomadsifull.adapter.GenderAdapter
 import com.example.roomadsifull.database.AppDatabase
 import com.example.roomadsifull.databinding.ActivityMainBinding
 import com.example.roomadsifull.models.Gender
@@ -33,10 +35,12 @@ class MainActivity : AppCompatActivity() {
 //                    .genderDAO()
 //                    .insert(Gender(3, "Otros 2"))
                 var list = AppDatabase.GetDataBase(this@MainActivity).genderDAO().getAll()
-                // AppDatabase.GetDataBase().genderDAO().delete(gender)
+
 
                 var count = AppDatabase.GetDataBase().genderDAO().getAll().size
                 runOnUiThread {
+                    binding.recycle.layoutManager  = LinearLayoutManager(this@MainActivity)
+                    binding.recycle.adapter = GenderAdapter(list.toMutableList())
                     var adapter = object : ArrayAdapter<Gender>(
                         this@MainActivity,
                         android.R.layout.simple_spinner_dropdown_item,
