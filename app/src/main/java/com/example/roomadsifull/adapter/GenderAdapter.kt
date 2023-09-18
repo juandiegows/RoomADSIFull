@@ -1,5 +1,6 @@
 package com.example.roomadsifull.adapter
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -33,10 +34,12 @@ class GenderAdapter(var list: MutableList<Gender>) :
                         .setPositiveButton("Si") { view, b ->
                             CoroutineScope(Dispatchers.IO).launch {
                                 AppDatabase.GetDataBase(binding.root.context).genderDAO().delete(gender)
-
+                                (binding.root.context as Activity).runOnUiThread {
+                                    list.remove(gender)
+                                    this@GenderAdapter.notifyItemRemoved(position)
+                                }
                             }
-                            list.remove(gender)
-                            this@GenderAdapter.notifyItemRemoved(position)
+
 
                         }
                         .setNegativeButton("No") { _, _ ->
