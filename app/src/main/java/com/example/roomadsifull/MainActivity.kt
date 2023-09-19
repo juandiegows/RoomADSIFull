@@ -29,17 +29,12 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this@MainActivity, "${gender.name}", Toast.LENGTH_SHORT).show()
         }
         CoroutineScope(Dispatchers.IO).launch {
-
             try {
 //                var count = AppDatabase.GetDataBase(this@MainActivity)
 //                    .genderDAO()
 //                    .insert(Gender(3, "Otros 2"))
                 var list = AppDatabase.GetDataBase(this@MainActivity).genderDAO().getAll()
-
-
                 var count = AppDatabase.GetDataBase().genderDAO().getAll().size
-
-
                 runOnUiThread {
                     binding.recycle.layoutManager  = LinearLayoutManager(this@MainActivity)
                     binding.recycle.adapter = GenderAdapter(list.toMutableList())
@@ -49,15 +44,9 @@ class MainActivity : AppCompatActivity() {
                         list
                     ){
                         override fun getItemId(position: Int): Long {
-
                             return  getItem(position)?.id ?: 0
-
                         }
-
-
                     }
-
-
                     binding.spinner.adapter = adapter
 
                     binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -75,8 +64,6 @@ class MainActivity : AppCompatActivity() {
 
                         }
                     }
-
-
                     Toast.makeText(this@MainActivity, "$count", Toast.LENGTH_SHORT).show()
                 }
             }catch (e: SQLiteConstraintException){
