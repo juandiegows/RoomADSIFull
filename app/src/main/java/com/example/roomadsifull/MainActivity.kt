@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.roomadsifull.adapter.GenderAdapter
 import com.example.roomadsifull.database.AppDatabase
 import com.example.roomadsifull.databinding.ActivityMainBinding
+import com.example.roomadsifull.helper.Util
 import com.example.roomadsifull.models.Gender
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,25 +20,34 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
+
+    fun edit(gender: Gender){
+
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //  setNumer(1,2,3,4,5,6,7,8)
         binding.btnShow.setOnClickListener {
             var gender = binding.spinner.selectedItem as Gender
             Toast.makeText(this@MainActivity, "${gender.name}", Toast.LENGTH_SHORT).show()
         }
         CoroutineScope(Dispatchers.IO).launch {
             try {
-//                var count = AppDatabase.GetDataBase(this@MainActivity)
-//                    .genderDAO()
-//                    .insert(Gender(3, "Otros 2"))
                 var list = AppDatabase.GetDataBase(this@MainActivity).genderDAO().getAll()
+
+
+                list = AppDatabase.GetDataBase(this@MainActivity).genderDAO().getAll()
                 var count = AppDatabase.GetDataBase().genderDAO().getAll().size
+
                 runOnUiThread {
                     binding.recycle.layoutManager  = LinearLayoutManager(this@MainActivity)
-                    binding.recycle.adapter = GenderAdapter(list.toMutableList())
+                    binding.recycle.adapter = GenderAdapter(list.toMutableList()){ gender ->
+                        gender.name = "Update"
+                        Util.gender = gender
+                        AppDatabase.GetDataBase().genderDAO().update(gender)
+
+                    }
                     var adapter = object : ArrayAdapter<Gender>(
                         this@MainActivity,
                         android.R.layout.simple_spinner_dropdown_item,

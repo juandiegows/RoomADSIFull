@@ -30,7 +30,8 @@
             app:srcCompat="@drawable/baseline_delete_24" />
 
         <ImageView
-            android:id="@+id/imageView2"
+
+            android:id="@+id/btnEdit"
             android:layout_width="40dp"
             android:layout_height="40dp"
             app:srcCompat="@drawable/baseline_edit_24" />

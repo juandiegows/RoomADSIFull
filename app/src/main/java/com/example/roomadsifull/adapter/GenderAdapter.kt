@@ -13,7 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class GenderAdapter(var list: MutableList<Gender>) :
+class GenderAdapter(var list: MutableList<Gender>, var edit : (gender: Gender) -> Unit) :
     RecyclerView.Adapter<GenderAdapter.GenderHolder>() {
     inner class GenderHolder(var binding: ItemGenderBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -28,6 +28,9 @@ class GenderAdapter(var list: MutableList<Gender>) :
         gender.apply {
             binding.apply {
                 txtName.text = name
+                btnEdit.setOnClickListener {
+                    edit.invoke(gender)
+                }
                 btnDelete.setOnClickListener {
                     AlertDialog.Builder(binding.root.context)
                         .setMessage("¿Desea eliminar el genero $name?")
